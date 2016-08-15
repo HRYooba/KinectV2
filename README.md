@@ -1,4 +1,4 @@
-# KinectV2
+# KinectV2-for-openFrameworks
 KinectV2のColor, Body, DepthをopenFrameworksに移植したやつ  
 
 ### 環境  
