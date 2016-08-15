@@ -1,5 +1,5 @@
 # KinectV2
-KinectV2のColor, Body, DepthをopenFrameworksに移植  
+KinectV2のColor, Body, DepthをopenFrameworksに移植したやつ  
 
 ### 環境  
   Windows 10  
