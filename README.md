@@ -15,16 +15,8 @@ KinectV2のColor, Body, DepthをopenFrameworksに移植
   ```
   C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\Lib\x86 
   ```
-  追加の依存ファイルに
-  ```
-  Kinect20.lib
-  ```
-  を設定する  
-  NuGetパッケージの管理から
-  ```
-  opencv3.1
-  ```
-  をインストール
+  追加の依存ファイルに Kinect20.lib を設定する  
+  NuGetパッケージの管理から opencv3.1 をインストール  
 
 ### 参考サイト  
 <http://izmiz.hateblo.jp/entry/2015/02/08/222217>  
