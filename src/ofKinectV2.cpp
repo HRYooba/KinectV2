@@ -170,7 +170,8 @@ void ofKinectV2::updateDepth() {
 	IDepthFrame* pDepthFrame = nullptr;
 	hr = pDepthReader->AcquireLatestFrame(&pDepthFrame);
 	if (SUCCEEDED(hr)) {
-		pDepthFrame->CopyFrameDataToArray(dBufferSize, &depthBuffer[0]);
+		pDepthFrame->CopyFrameDataToArray(DEPTH_HEIGHT * DEPTH_WIDTH, &depthBuffer[0]);
+		pCoordinateMapper->MapColorFrameToDepthSpace(DEPTH_HEIGHT * DEPTH_WIDTH, &depthBuffer[0], COLOR_WIDTH * COLOR_HEIGHT, &depthSpace[0]);
 		hr = pDepthFrame->AccessUnderlyingBuffer(&dBufferSize, reinterpret_cast<UINT16**>(&bufferMat.data));
 		if (SUCCEEDED(hr)) {
 			bufferMat.convertTo(depthMat, CV_8U, -255.0f / 8000.0f, 255.0f);
@@ -220,20 +221,23 @@ bool ofKinectV2::getIsTraking(int count) {
 }
 
 float ofKinectV2::getDepthAt(float x, float y) {
-	pCoordinateMapper->MapColorFrameToDepthSpace(DEPTH_HEIGHT * DEPTH_WIDTH, &depthBuffer[0], COLOR_WIDTH * COLOR_HEIGHT, &depthSpace[0]);
+	if (0 <= x && x < DEPTH_WIDTH && y <= 0 && y < DEPTH_HEIGHT) {
+		unsigned int colorIndex = (int)x + COLOR_WIDTH * (int)y;
+		int depthX = static_cast<int>(depthSpace[colorIndex].X + 0.5f);
+		int depthY = static_cast<int>(depthSpace[colorIndex].Y + 0.5f);
 
-	unsigned int colorIndex = (int)x + COLOR_WIDTH * (int)y;
-	int depthX = static_cast<int>(depthSpace[colorIndex].X + 0.5f);
-	int depthY = static_cast<int>(depthSpace[colorIndex].Y + 0.5f);
-
-	if ((0 <= depthX) && (depthX < DEPTH_WIDTH) && (0 <= depthY) && (depthY < DEPTH_HEIGHT)) {
-		unsigned int depthIndex = depthX + depthY * DEPTH_WIDTH;
-		depthData[colorIndex] = depthBuffer[depthIndex];
-		//return ofMap(static_cast<float>(depthData[colorIndex]), 0.0f, 8000.0f, 0.0f, 255.0f);
-		return static_cast<float>(depthData[colorIndex]);
+		if ((0 <= depthX) && (depthX < DEPTH_WIDTH) && (0 <= depthY) && (depthY < DEPTH_HEIGHT)) {
+			unsigned int depthIndex = depthX + depthY * DEPTH_WIDTH;
+			depthData[colorIndex] = depthBuffer[depthIndex];
+			//return ofMap(static_cast<float>(depthData[colorIndex]), 0.0f, 8000.0f, 0.0f, 255.0f);
+			return static_cast<float>(depthData[colorIndex]);
+		}
+		else {
+			return 0;
+		}
 	}
 	else {
-		return 0;
+		return -1;
 	}
 }
 
