@@ -221,7 +221,7 @@ bool ofKinectV2::getIsTraking(int count) {
 }
 
 float ofKinectV2::getDepthAt(float x, float y) {
-	if (0 <= x && x < DEPTH_WIDTH && y <= 0 && y < DEPTH_HEIGHT) {
+	if (0 <= x && x < COLOR_WIDTH && y <= 0 && y < COLOR_HEIGHT) {
 		unsigned int colorIndex = (int)x + COLOR_WIDTH * (int)y;
 		int depthX = static_cast<int>(depthSpace[colorIndex].X + 0.5f);
 		int depthY = static_cast<int>(depthSpace[colorIndex].Y + 0.5f);
